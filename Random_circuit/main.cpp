@@ -75,13 +75,22 @@ public:
 };
 
 // 找到矩阵中的 "1"，并把所有符合要求的数放进vector的cell中， cell中保存着input的元件编号。 再把cell放入vector的cells中， 让每个元件都记录连接信息
-vector<string> Cell_inout(vector<vector<int>> &adjM, vector<string> CellTypeName)
+vector<string> Cell_inout(vector<vector<int>> &adjM, vector<string> CellTypeName,int i)
 {
     vector<string> cellnumber;
     cellnumber.resize(10);
 
     vector<Cell_Interface> cells;
     int j = 0;
+
+    //输出文件
+
+    ostringstream Convert;
+    Convert<<"random_circuit_"<<i<<".txt";
+    string filename="C:\\Users\\ZhuHe\\Desktop\\test\\" +Convert.str();
+    ofstream out_circuit(filename.c_str(),ios::app);
+
+
 //    Cell_Interface cell;
 
 
@@ -120,7 +129,8 @@ vector<string> Cell_inout(vector<vector<int>> &adjM, vector<string> CellTypeName
 
     char cell_name = 'a';
 
-
+    //============================================================================================
+    //output to console
     for (int k = 0; k < adjM.size(); ++k)
     {
 
@@ -131,13 +141,63 @@ vector<string> Cell_inout(vector<vector<int>> &adjM, vector<string> CellTypeName
 //        }
 
         //需要更改文件路径
-        ofstream out_circuit("C:\\Users\\ZhuHe\\Desktop\\test\\Random_circuit.txt ",ios::app);
 
 
 //        else
         if(k==adjM.size()-1)
         {
-            out_circuit << "  inv1 ";
+            cout << "  and2 ";
+            cout << "g0" << k << " (.a(a), .b(b), .O("<<cells[k].output<<"))"<<endl;
+        }
+        else
+        {
+            cout << "  "<<CellTypeName[k];
+            cout << "g0" << k << " (";
+
+            for (int m = 0; m < cells[k].input.size(); ++m)
+            {
+                //打印输入的名字a, b, c, d 等。 打印链接的节点
+
+                cout << "." << char(cell_name + m) << "(O" << cells[k].input[m] << ")" << ", ";
+            }
+
+
+            if (k == 0)
+            {
+                cout << ".O(g))" << endl;
+                //如果第一个元件为4输入，则它的output为0.   我们想想把它转换为g
+                if (cells[0].input.size()==4)
+                {
+                    cellnumber[4]= "g";      //cell.output
+                }
+
+            }
+            else
+            {
+                cout << ".O(O" << cells[k].output << "))" << endl;
+            }
+        }
+
+    }
+
+    //============================================================================================
+    //output to file
+    for (int k = 0; k < adjM.size(); ++k)
+    {
+
+        //当输入时4个的时候，不显示verilog代码，直接接上下面从majority vote中提取的东西
+//        if (cells[k].input.size()==4)
+//        {
+//            continue;
+//        }
+
+        //需要更改文件路径
+
+
+//        else
+        if(k==adjM.size()-1)
+        {
+            out_circuit << "  and2 ";
             out_circuit << "g0" << k << " (.a(a), .b(b), .O("<<cells[k].output<<"))"<<endl;
         }
         else
@@ -170,6 +230,7 @@ vector<string> Cell_inout(vector<vector<int>> &adjM, vector<string> CellTypeName
         }
 
     }
+    //============================================================================================
     return cellnumber;
 
 }
@@ -244,7 +305,7 @@ vector<int> random_number()
     vector<int> temp2;
     temp2.resize(size);
 
-    srand(time(NULL));
+//    srand(time(NULL));
     int n = size - 1;       //input 个数  选的个数  2,3,4 ...
     int m;       //  (m,n)范围     a < m
 
@@ -340,7 +401,7 @@ vector<string> displayArr(vector<int> arr, int n)
 //======================================================================================================================
 //原main函数
 
-void Final_function()
+void Final_function(int l)
 {
 
 //    ostringstream Convert;
@@ -362,7 +423,7 @@ void Final_function()
     }
 
     //随机返回每个原件的input个数并打印
-    cout << "这是input的个数: " << endl;
+    cout << "number of input: " << endl;
 //    int *CellTypeNum;
     auto CellTypeNum = random_number();
 //    displayArr(CellTypeNum, size);
@@ -373,28 +434,33 @@ void Final_function()
 
     cout << endl << "==============================================================" << endl;
 
-    cout << "这是每个原件的input都有什么："<<endl;
+    cout << "what are the inputs："<<endl;
     choose_cell(CellTypeNum, adjMatrix);
 
     cout << endl << "==============================================================" << endl;
 
     //输出随机电路的verilog形式
-    cout << "这是随机电路生成的verilog代码"<<endl;
+    cout << "random circuit generate verilog code"<<endl;
 //    Cell_inout(adjMatrix, CellTypeName);
 
     //返回数组，数组中存放有4个输入的元件中，哪4个输入
-    auto cellnumber = Cell_inout(adjMatrix, CellTypeName);
+
+//    auto cellnumber = Cell_inout(adjMatrix, CellTypeName);
+
+        auto cellnumber = Cell_inout(adjMatrix, CellTypeName,l);
+
+
 
     cout << endl << "==============================================================" << endl;
     cout << "majority vote"<<endl;
 
-    if (cellnumber[0]==to_string(0))
-    {
-
-    } else
-    {
-        get_Majority_vote(cellnumber);
-    }
+//    if (cellnumber[0]==to_string(0))
+//    {
+//
+//    } else
+//    {
+//        get_Majority_vote(cellnumber);
+//    }
 
 
 
@@ -406,8 +472,12 @@ void Final_function()
 
 int main()
 {
+    srand(time(NULL));
+    for (int l = 0; l <10 ; ++l)
+    {
+        Final_function(l);
+    }
 
-    Final_function();
 
     return 0;
 }
