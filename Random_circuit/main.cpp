@@ -11,17 +11,17 @@
 
 using namespace std;
 
-const int size = 5;
+const int size = 20;
 //auto *temp1 = new int[size];
 
 
 
 //============================================================================================
 //配置majority vote，读取其中数据 flatten随机电路
-void get_Majority_vote(vector<string> cellnumber)
+void get_Majority_vote(vector<string> cellnumber ,int i)
 {
     ifstream openfile;
-    //文件路径需要更改
+    //文件路径需要更改,提取文件的路径
     openfile.open("C:\\Users\\ZhuHe\\Desktop\\majority.txt");
 
     string s;
@@ -41,8 +41,11 @@ void get_Majority_vote(vector<string> cellnumber)
         s = regex_replace(s, reg_input4, "(O"+cellnumber[3]+")");
         s = regex_replace(s, reg_input5, "("+cellnumber[4]+")");
 
-        //文件路径需要更改
-        ofstream out_circuit("C:\\Users\\ZhuHe\\Desktop\\test\\Random_circuit.txt",ios::app);
+        //文件路径需要更改，输出文件路径
+        ostringstream Convert;
+        Convert<<"random_circuit_"<<i<<".txt";
+        string filename="C:\\Users\\ZhuHe\\Desktop\\test\\" +Convert.str();
+        ofstream out_circuit(filename.c_str(),ios::app);
 
         out_circuit << s << endl;
 
@@ -147,12 +150,12 @@ vector<string> Cell_inout(vector<vector<int>> &adjM, vector<string> CellTypeName
         if(k==adjM.size()-1)
         {
             cout << "  and2 ";
-            cout << "g0" << k << " (.a(a), .b(b), .O("<<cells[k].output<<"))"<<endl;
+            cout << "g0" << k << "(.a(a), .b(b), .O("<<cells[k].output<<"))"<<endl;
         }
         else
         {
             cout << "  "<<CellTypeName[k];
-            cout << "g0" << k << " (";
+            cout << "g0" << k << "(";
 
             for (int m = 0; m < cells[k].input.size(); ++m)
             {
@@ -198,12 +201,12 @@ vector<string> Cell_inout(vector<vector<int>> &adjM, vector<string> CellTypeName
         if(k==adjM.size()-1)
         {
             out_circuit << "  and2 ";
-            out_circuit << "g0" << k << " (.a(a), .b(b), .O("<<cells[k].output<<"))"<<endl;
+            out_circuit << "g0" << k << "(.a(a), .b(b), .O("<<cells[k].output<<"))"<<endl;
         }
         else
         {
             out_circuit << "  "<<CellTypeName[k];
-            out_circuit << "g0" << k << " (";
+            out_circuit << "g0" << k << "(";
 
             for (int m = 0; m < cells[k].input.size(); ++m)
             {
@@ -454,13 +457,13 @@ void Final_function(int l)
     cout << endl << "==============================================================" << endl;
     cout << "majority vote"<<endl;
 
-//    if (cellnumber[0]==to_string(0))
-//    {
-//
-//    } else
-//    {
-//        get_Majority_vote(cellnumber);
-//    }
+    if (cellnumber[0]==to_string(0))
+    {
+
+    } else
+    {
+        get_Majority_vote(cellnumber,l);
+    }
 
 
 
