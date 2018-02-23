@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+E:/University College Cork/Final Year Project/C++/Random_circuit/main.cpp
+iostream
+-
+random
+-
+map
+-
+fstream
+-
+regex
+-
+sstream
+-
+string
+-
+stdio.h
+-
+stdlib.h
+-
+time.h
+-
+
